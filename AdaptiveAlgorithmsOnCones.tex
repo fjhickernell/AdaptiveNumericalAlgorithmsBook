@@ -1,13 +1,12 @@
-
-
 \documentclass{SIAMbook2019}
 
-
+\usepackage{amsmath}
 \usepackage{epsfig}
 \usepackage{graphicx}
 \usepackage{makeidx}
 \usepackage{multicol}
-\usepackage{subeqn}
+%\usepackage{subeqn}
+\input{FJHDef}
 
 \makeindex
 
@@ -79,17 +78,6 @@
 
 \begin{contributors}
 \contributor{A. Einstein}{Institute for Advanced Studies Princeton University}
-\contributor{Enrico Fermi}{University of Chicago}
-\contributor{John von Neumann}{Institute for Advanced Studies Princeton University}
-\contributor{A. Einstein}{Institute for Advanced Studies Princeton University}
-\contributor{Enrico Fermi}{University of Chicago}
-\contributor{John von Neumann}{Institute for Advanced Studies\\ Princeton University}\contributor{A. Einstein}{Institute for Advanced Studies Princeton University}
-\contributor{Enrico Fermi}{University of Chicago}
-\contributor{John von Neumann}{Institute for Advanced Studies Princeton University}\contributor{A. Einstein}{Institute for Advanced Studies Princeton University}
-\contributor{Enrico Fermi}{University of Chicago}
-\contributor{John von Neumann}{Institute for Advanced Studies Princeton University}\contributor{A. Einstein}{Institute for Advanced Studies Princeton University}
-\contributor{Enrico Fermi}{University of Chicago}
-\contributor{John von Neumann}{Institute for Advanced Studies Princeton University}
 \end{contributors}
 
 \listoffigures
@@ -97,17 +85,19 @@
 \listofalgorithms
 
 \begin{thepreface}
-This is the preface. This is the preface. This is the preface.
-This is the preface. This is the preface.
-This is the preface. This is the preface. This is the preface.
+This is the preface.
 \end{thepreface}
 
 \mainmatter
-\part{A Sample Part Page}
+\part{Illustrating Key Ideas}
 
-\chapter[Sample File for SIAM \LaTeX\ Book Macro Package]%
-{Sample File for SIAM \LaTeX\ Book Macro Package}
-\index{Sample!file}
+\chapter{Why Adaptive Numerical Algorithms}
+Numerical algorithms are crucial for solving mathematical problems that do not have analytic solutions.  Examples include finding zeros, integrals, or optima of functions, solving linear equations, and solving (stochastic/partial) differential equations.  Algorithms designers 
+
+
+\chapter[Single Zero of a Univariate Function]%
+{Identifying a Single Zero of a Univariate Function}
+\index{Zeros!Univariate function!Single}
 \begin{chapterquote}[120pt]
 We have nothing to fear but fear itself.\\
 ---{\upshape Franklin D. Roosevelt}\\[6pt]
