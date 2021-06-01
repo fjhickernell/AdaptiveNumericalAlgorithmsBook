@@ -68,9 +68,11 @@
 \newlength{\problemwidth}
 \newlength{\problemcolumnonewidth}
 \newlength{\problemcolumntwowidth}
-\setlength{\problemwidth}{0.85\textwidth}
+\setlength{\problemwidth}{0.8\textwidth}
+\newcounter{problemcounter}[chapter]
 
-\newcommand{\problem}[5][0.35]{
+
+\newcommand{\problem}[5][0.4]{
 %1 (optional) is width of first column
 %2 is problem label
 %3 is parameters
@@ -79,7 +81,8 @@
 \setlength{\problemcolumnonewidth}{#1\problemwidth}
 \setlength{\problemcolumntwowidth}{\problemwidth}
 \addtolength{\problemcolumntwowidth}{-\problemcolumnonewidth}
-\begin{equation} \label{#2}
+\stepcounter{problemcounter}
+\begin{equation} \label{#2} \tag{Prob \thechapter.\theproblemcounter}
 \begin{tabular}{>{\raggedright}p{\problemcolumnonewidth}>{\raggedright}p{\problemcolumntwowidth}}
     \textbf{Assumed} & \textbf{Output}  \tabularnewline
     #3 \newline \newline
@@ -120,6 +123,8 @@ This is the preface.
 \input{WhyAdaptiveAlgorithms}
 
 
+
+
 \chapter[Single Zero of a Univariate Function]%
 {Identifying a Single Zero of a Univariate Function}
 \index{Zeros!Univariate function!Single}
@@ -129,6 +134,8 @@ We have nothing to fear but fear itself.\\
 I am not a crook.\\
 ---{\upshape Richard M. Nixon}
 \end{chapterquote}
+
+\end{document}
 
 
 \section{Introduction and Examples}
