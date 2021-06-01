@@ -1,0 +1,15 @@
+\chapter{Why Adaptive Numerical Algorithms}
+Numerical algorithms are crucial for solving mathematical problems that do not have analytic solutions.  Examples include finding zeros, evaluating integrals, or locating optima of functions, solving linear equations, and solving (stochastic/partial) differential equations.  Algorithms designers aim to construct procedures that provide a correct answer with a limited amount of computational effort.  
+
+These goals of accuracy and efficiency are often at odds.  Success depends on the scope of problems that the algorithms are designed to solve.  To illustrate this, consider the problem of locating the zeros of a function:
+\problem[0.35]{prob:findzero}%
+{set of functions $\cf$}%
+{black-box function $f \in \cf$ \newline tolerance $\varepsilon > 0$ }%
+{$x_0$ such that $f(x) = 0$ \\ 
+    \qquad for some $x \in [x_0 - \varepsilon, x_0 + \varepsilon]$}
+The assumptions and the output define the algorithm.  The input is provided by the user, who can be assured that the output is accurate, provided the assumptions are met.  By ``black-box'' we mean that our zero finding algorithm has access to function values for any point in the domain, but these come at a computational cost\footnote{By computational cost we mean the number of arithmetic operations required.  Unless noted otherwise, the cost of evaluating the black-box function is assumed to be $\Order(1)$.}. The only a priori knowledge about the function is in the definition of $\cf$.
+
+If $\cf$ consists of the single function $x \mapsto 29x - 47$, then the zero-finding algorithm simply needs to return $47/29$, which can be pre-computed.  If $\cf$ consists of all linear functions, then the zero-finding algorithm can evaluate $f$ at two points and interpolate to find the zero.  The algorithm is cheap, but is defined for a quite narrow set of functions.  The bisection algorithm succeeds for all continuous functions  with opposite signs at the endpoints of the domain, $\cf: = \{ f \in C[a,b] : f(a)f(b) \le 0\}$.  The computational cost is $\Order\bigl((b-a) \log(\varepsilon^{-1}) \bigr)$. A smaller tolerance demands more arithmetic operations, which translate into more time.  If $\cf$ is expanded to become $C[a,b]$, then $f \in \cf$ may have no zeros, and so no algorithm exists that fits the requirements of .
+
+
+.  Demanding more accuracy for a larger class or 

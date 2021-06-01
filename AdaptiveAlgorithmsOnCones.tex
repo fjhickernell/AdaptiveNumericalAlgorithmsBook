@@ -1,6 +1,8 @@
 \documentclass{SIAMbook2019}
 
 \usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{array,booktabs}
 \usepackage{epsfig}
 \usepackage{graphicx}
 \usepackage{makeidx}
@@ -63,6 +65,30 @@
 \renewcommand{\ttdefault}{txtt}
 \renewcommand\bfdefault{b}
 
+\newlength{\problemwidth}
+\newlength{\problemcolumnonewidth}
+\newlength{\problemcolumntwowidth}
+\setlength{\problemwidth}{0.85\textwidth}
+
+\newcommand{\problem}[5][0.35]{
+%1 (optional) is width of first column
+%2 is problem label
+%3 is parameters
+%4 is input
+%5 is output
+\setlength{\problemcolumnonewidth}{#1\problemwidth}
+\setlength{\problemcolumntwowidth}{\problemwidth}
+\addtolength{\problemcolumntwowidth}{-\problemcolumnonewidth}
+\begin{equation} \label{#2}
+\begin{tabular}{>{\raggedright}p{\problemcolumnonewidth}>{\raggedright}p{\problemcolumntwowidth}}
+    \textbf{Assumed} & \textbf{Output}  \tabularnewline
+    #3 \newline \newline
+    \textbf{Input} \newline #4
+    & #5
+\end{tabular}
+\end{equation}
+}
+
 
 \title{Adaptive Numerical Algorithms on Cones}
 \author{Fred J. Hickernell}
@@ -91,8 +117,7 @@ This is the preface.
 \mainmatter
 \part{Illustrating Key Ideas}
 
-\chapter{Why Adaptive Numerical Algorithms}
-Numerical algorithms are crucial for solving mathematical problems that do not have analytic solutions.  Examples include finding zeros, integrals, or optima of functions, solving linear equations, and solving (stochastic/partial) differential equations.  Algorithms designers 
+\input{WhyAdaptiveAlgorithms}
 
 
 \chapter[Single Zero of a Univariate Function]%
