@@ -11,3 +11,9 @@ The assumptions and the output define the algorithm.  The input is provided by t
 
 If $\cf$ consists of the single function $x \mapsto 29x - 47$, then the zero-finding algorithm simply needs to return $47/29$, which can be pre-computed.  If $\cf$ consists of all linear functions, then the zero-finding algorithm can evaluate $f$ at two points and interpolate to find the zero.  The algorithm is cheap, but is defined for a quite narrow set of functions.  The bisection algorithm succeeds for all continuous functions  with opposite signs at the endpoints of the domain, $\cf: = \{ f \in C[a,b] : f(a)f(b) \le 0\}$.  The computational cost is $\Order\bigl((b-a) \log(\varepsilon^{-1}) \bigr)$. A smaller tolerance demands more arithmetic operations, which translate into more time.  If $\cf$ is expanded to become $C[a,b]$, then $f \in \cf$ may have no zeros, and so no algorithm exists that can solve \eqref{prob:findzero}.
 
+If there is at least one algorithm that can solve a problem, then we would prefer the most efficient one.  Efficiency can be measured in wall clock time, but this can vary with software and hardware implementations.  The \emph{computational cost} or the arithmetic operations required is a reasonable way to measure the efficiency of an algorithm.  An algorithm that costs $\Order\bigl(\log(\varepsilon^{-1})\bigr)$ operations is more efficient than one that costs $\Order(\varepsilon^{-1})$, where the error tolerance, $\varepsilon$, is tending to zero. Typically we do not count the cost exactly but are satisfied with its order.
+
+The cost of the most efficient algorithm possible is called the \emph{computational complexity} of the problem.  If we can derive a lower bound on the computational complexity and identify an algorithm that achieves this lower bound, then we know the computational complexity.
+
+We may also measure the information cost, or the number of function values required.  These two may be of similar order
+
