@@ -919,28 +919,19 @@
     \if@restonecol\twocolumn\fi
     }
 
-%\newlength{\problemwidth}
-%\newlength{\problemcolumnonewidth}
-%\newlength{\problemcolumntwowidth}
-%\setlength{\problemwidth}{0.8\textwidth}
-\newcounter{problemcounter}[chapter]
-%\numberwithin{problemcounter}{chapter}
-
+\newcounter{problem}[chapter]
 \newenvironment{problem}[1]{%
-%1 (optional) is width of first column
-%2 is problem caption
-%3 is parameters
-%4 is input
-%5 is output
-\refstepcounter{problemcounter}
-\renewcommand{\theproblemcounter}{\arabic{chapter}.\arabic{problemcounter}}
-\addcontentsline{lop}{problem}{\protect\numberline{\theproblemcounter}{\ignorespaces#1}}%
+\refstepcounter{problem}
+\renewcommand{\theproblem}{\thechapter.\arabic{problem}}
+\addcontentsline{lop}{problem}{\protect\numberline{\theproblem}{\ignorespaces#1}}%
 \par\medskip
 \noindent  \rule{\textwidth}{1pt}
-\noindent \textbf{Problem~\theproblemcounter} \rmfamily #1 \\[-0.55\baselineskip]
+\noindent \textbf{Problem~\theproblem} \rmfamily #1 \\[-0.55\baselineskip]
 \noindent  \rule{\textwidth}{0.5pt} \par%
 \hspace{-2ex}}
-{\par \noindent \rule{\textwidth}{0.5pt} \par \medskip\smallskip}
+{\par 
+Problem \theproblem \par
+\par \noindent \rule{\textwidth}{0.5pt} \par \medskip\smallskip}
 %%%%%%%%%%%%%%%%%
 % end of FJH added
 %%%%%%%%%%%%%%%%
