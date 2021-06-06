@@ -5,36 +5,41 @@ These goals of accuracy and efficiency are often at odds.  Adaption allows us ba
 
 \section{Problem Definition}
 
-Success depends on the scope of problems that the algorithms are designed to solve.  To illustrate this, consider the problem of locating the zeros of a function:
-\problem[0.45]{prob:findzero}%
+Success depends on the scope of problems that the algorithms are designed to solve.  To illustrate this, consider the problem of locating the zeros of functions:
+\begin{problem}{Finding one zero of a univariate function}\label{prob:findzero}
+\problemspecs[0.45]%
 {set of functions $\cf$}%
 {black-box function $f \in \cf$ \\ tolerance $\varepsilon > 0$ }%
 {$x_0$ such that $f(x) = 0$ \\ 
     \qquad for some $x \in [x_0 - \varepsilon, x_0 + \varepsilon]$}
-The assumptions and the output define the problem to be solved and are also used to define the algorithm. A successful algorithm must take any input satisfying the assumptions and return the desired output.   The user should be assured that the output is accurate, provided the assumptions are met.  
+\end{problem}
+
+The assumptions and the output define the problem to be solved and are also used to define the algorithm. A successful algorithm must take any input satisfying the assumptions and return the desired output.   The user should be assured that the output is accurate, provided the assumptions are met.  Note that the output will normally not be an exact answer, but an answer satisfying an error tolerance.  In the case above it is an absolute error tolerance.
 
 By ``black-box'' we mean that our zero finding algorithm has access to function values for any point in the domain, but these come at a computational cost\footnote{By computational cost we mean the number of arithmetic operations required.  Unless noted otherwise, the cost of evaluating the black-box function is assumed to be $\Order(1)$.}. The only a priori knowledge about the function is in the definition of $\cf$.
 
 If $\cf$ consists of the single function $x \mapsto 29x - 47$, then zero-finding Algorithm \ref{alg:zero2947} simply needs to return $47/29$, which can be pre-computed.  If $\cf$ consists of all linear functions, then zero-finding Algorithm \ref{alg:zeroLinear} can evaluate $f$ at two points and interpolate to find the zero exactly\footnote{We typically ignore the complications of finite precision and round-off error unless they are catastrophic.}.  The algorithm is cheap, but applies to a quite narrow set of functions.  
 
 \begin{algorithm}[H]
-\caption{Direct computation for \ref{prob:findzero} with $\cf = \{x \mapsto 29x - 47 \}$ \label{alg:zero2947}}
+\caption{Direct computation for Problem \ref{prob:findzero} with $\cf = \{x \mapsto 29x - 47 \}$ \label{alg:zero2947}}
 	\begin{algorithmic}
     \RETURN $x_0 \leftarrow 47/29$
     \end{algorithmic}
 \end{algorithm}
 
 \begin{algorithm}[H]
-\caption{Linear interpolation for \ref{prob:findzero} with $\cf = \{x \mapsto \alpha  + \beta x : \alpha, \beta \in \reals\}$ \label{alg:zeroLinear}}
+\caption{Linear interpolation for Problem \ref{prob:findzero} with $\cf = \{x \mapsto \alpha  + \beta x : \alpha, \beta \in \reals\}$ \label{alg:zeroLinear}}
 	\begin{algorithmic}
     \RETURN $x_0 \leftarrow (f(1) - f(0))/f(0)$
     \end{algorithmic}
 \end{algorithm}
 
-If $\cf$ consists of continuous functions defined on $[a,b]$ where $f(a)$ and $f(b)$ have opposite signs, then there must exist at least one zero in this interval.  The bisection algorithm succeeds for \ref{prob:findzero} by halving the interval containing the zero until it is small enough.
+Even though the user may only apply an algorithm to a handful of input functions, algorithms are typically designed for reasonably large classes of functions so that these algorithms can server a wide variety of users with diverse input functions.  If truly only one or two cases are of interest, then those solutions can be pre-computed, as Algorithm \ref{alg:zero2947} does for $\cf$ consisting of just one function.
+
+If $\cf$ consists of continuous functions defined on $[a,b]$ where $f(a)$ and $f(b)$ have opposite signs, then there must exist at least one zero in this interval.  The bisection algorithm succeeds for Problem \ref{prob:findzero} by halving the interval containing the zero until it is small enough.
 
 \begin{algorithm}
-\caption{Bisection for \ref{prob:findzero} with $\cf = \{C[a,b] : f(a)f(b) \le 0\}$  \label{alg:zeroBisection}}
+\caption{Bisection for Problem \ref{prob:findzero} with $\cf = \{C[a,b] : f(a)f(b) \le 0\}$  \label{alg:zeroBisection}}
 	\begin{algorithmic}
     \State Let $x_{\text{left}} \leftarrow a$, $x_{\text{right}} \leftarrow b$, $y_{\text{left}} \leftarrow \sign(f(a))$, $y_{\text{right}} \leftarrow \sign(f(b))$
     \IfThen {$y_{\text{left}} = 0$}{\Return $x_0 \leftarrow x_\text{left}$}
@@ -60,15 +65,21 @@ Bisection Algorithm \ref{alg:zeroBisection} has a few notable features that set 
 
 We emphasize that algorithms must be matched to the problem definition.  The problem definition specifies our assumptions, and the algorithm is expected to succeed under those assumptions.  If the problem definition is altered, then our algorithm may be invalid.  If the assumptions are violated, then our algorithm may fail.  For Algorithm \ref{alg:zeroBisection} we can detect some cases in which a $f$ input into the algorithm falls outside $\cf$, such as if the function values at $a$ and $b$ are the same.  However, we cannot always detect whether $f$ falls outside $\cf$.  If $f$ has a jump discontinuity from negative to positive values, then Algorithm \ref{alg:zeroBisection} may converge on the jump, even if a true zero exists elsewhere.
 
+For simplicity our algorithm listings do not include all the error-checking that a well coded algorithm would have.  For example, in implementing Algorithm \ref{alg:zeroBisection} one should also include checks that $a< b$, as implied by the definition of $\cf$.
+
 \section{Computational Cost and Computational Complexity}
 
-Algorithm \ref{alg:zeroBisection} is adaptive in the selection of points where $f$ is evaluated; different $f$ may result in different choices of $x_{\text{new}}$, which are chosen strategically. The \emph{computational cost} of an algorithm is defined as the number of the arithmetic operations required to produce the output.  Adaptive Algorithm \ref{alg:zeroBisection} has a computational cost of $\Order\bigl(\log((b-a)/\varepsilon)\bigr)$.  One can imagine a non-adaptive algorithm that evaluates $f$ at  equally spaced $2\varepsilon$ apart on $[a,b]$ and returns $x_0$ as the midpoint of the subinterval where $f$ changes sign.  Such an algorithm would have a computational cost of $\Order\bigl((b-a)/\varepsilon\bigr)$, which is much greater as $\varepsilon \to 0$.   Algorithms \ref{alg:zero2947} and  \ref{alg:zeroLinear} have a computational cost of $\Order(1)$.
+Algorithm \ref{alg:zeroBisection} is adaptive in the selection of points where $f$ is evaluated; different $f$ may result in different choices of $x_{\text{new}}$, which are chosen strategically. The \emph{computational cost} of an algorithm is defined as the number of the arithmetic operations required to produce the output.  Adaptive Algorithm \ref{alg:zeroBisection} has a computational cost of $\Order\bigl(\log((b-a)/\varepsilon)\bigr)$.  A smaller tolerance demands more arithmetic operations, which translate into more time.
 
-The \emph{computational complexity} of a problem is the minimum computational cost over all algorithms that can solve it.  As with computational cost, we are typically satisfied with finding the order, not the exact expression.  We will show in ?? that the computational complexity of \ref{prob:findzero} with $\cf = \{C[a,b] : f(a)f(b) \le 0\}$ is $\Order\bigl(\log((b-a)/\varepsilon)\bigr)$, making Algorithm \ref{alg:zeroBisection} (asymptotically) optimal.
+One can imagine a non-adaptive algorithm that evaluates $f$ at  equally spaced $2\varepsilon$ apart on $[a,b]$ and returns $x_0$ as the midpoint of the subinterval where $f$ changes sign.  Such an algorithm would have a computational cost of $\Order\bigl((b-a)/\varepsilon\bigr)$, which is much greater as $\varepsilon \to 0$.  Hence, this non-adaptive algorithm is much less efficient.   
 
-or the arithmetic operations required is a reasonable way to measure the efficiency of an algorithm.  An algorithm that costs $\Order\bigl(\log(\varepsilon^{-1})\bigr)$
+The \emph{computational complexity} of a problem is the minimum computational cost over all algorithms that can solve it.  As with computational cost, we are typically satisfied with finding the order, not the exact expression.  We will show in ?? that the computational complexity of Problem \ref{prob:findzero} with $\cf = \{C[a,b] : f(a)f(b) \le 0\}$ is $\Order\bigl(\log((b-a)/\varepsilon)\bigr)$, making Algorithm \ref{alg:zeroBisection} (asymptotically) optimal.
 
-\problem[0.45]{prob:findzerocont}%
+Since $a$ and $b$ are assumed fixed in Algorithm \ref{alg:zeroBisection}, the number of function evaluations is always the same for the same tolerance, $\varepsilon$.  We can broaden the problem by making $a$ and $b$ inputs as follows:
+
+\begin{problem}{Finding one zero of a univariate continuous function}%
+\label{prob:findzerocont}
+\problemspecs[0.45]%
 {$\cf = \bigcup_{a < b} C[a,b]$}%
 {black-box function $f \in \cf$ \\ 
 $a$ and $b$ with $f \in C[a,b]$ \\
@@ -76,25 +87,26 @@ $a$ and $b$ with $f \in C[a,b]$ \\
 tolerance $\varepsilon > 0$ }%
 {$x_0$ such that $f(x) = 0$ \\ 
     \qquad for some $x \in [x_0 - \varepsilon, x_0 + \varepsilon]$}
+\end{problem}
 
+\begin{algorithm}
+\caption{Bisection for Problem \ref{prob:findzerocont}  \label{alg:zeroBisectionAB}}
+This is the same as Algorithm \ref{alg:zeroBisection} but with $a$ and $b$ now inputs.
+\end{algorithm}
 
-The bisection algorithm succeeds for zero-finding problem \eqref{prob:findzerocont} by starting with an interval that must contain a zero and halving it until the zero is contained in a small enough interval.
+Since this algorithm is the same as the previous one, the computational cost remains the same, i.e., $\Order\bigl(\log((b-a)/\varepsilon)\bigr)$ as $(b-a)/\varepsilon \to \infty$.  Explicitly including the inputs $a$ and $b$ in the computational cost formula is more informative than just assuming them to be constant.
 
-
-
-
-
-
-
-
-
-
+Again, we stress how the computational complexity of a problem and the computational cost required to solve it depend on the problem definition.  Algorithms \ref{alg:zero2947} and  \ref{alg:zeroLinear} have a computational cost of $\Order(1)$, however again, they solve very simple problems.  Problems \ref{prob:findzero} and \ref{prob:findzerocont} only require one zero to be found.  Finding all zeros of a function is a harder problem that is addressed in ???  If in  $\cf$ Problem \ref{prob:findzerocont} the requirement that $f(a) f(b) \le 0$ is dropped, then the problem may have no solution.
 
 
 
-all continuous functions  with opposite signs at the endpoints of the domain, $\cf: = \{ f \in C[a,b] : f(a)f(b) \le 0\}$.  The computational cost is $\Order\bigl((b-a) \log(\varepsilon^{-1}) \bigr)$. A smaller tolerance demands more arithmetic operations, which translate into more time.  If $\cf$ is expanded to become $C[a,b]$, then $f \in \cf$ may have no zeros, and so no algorithm exists that can solve \eqref{prob:findzero}.
 
-If there is at least one algorithm that can solve a problem, then we would prefer the most efficient one.  Efficiency can be measured in wall clock time, but this can vary with software and hardware implementations.  The \emph{computational cost} or the arithmetic operations required is a reasonable way to measure the efficiency of an algorithm.  An algorithm that costs $\Order\bigl(\log(\varepsilon^{-1})\bigr)$ operations is more efficient than one that costs $\Order(\varepsilon^{-1})$, where the error tolerance, $\varepsilon$, is tending to zero. Typically we do not count the cost exactly but are satisfied with its order.
+
+
+
+
+
+If there is at least one algorithm that can solve a problem, then we would prefer the most efficient one.  Efficiency can be measured in wall clock time, but this can vary with software and hardware implementations.  The \emph{computational cost} or the arithmetic operations required is a reasonable way to measure the efficiency of an algorithm. 
 
 The cost of the most efficient algorithm possible is called the \emph{computational complexity} of the problem.  If we can derive a lower bound on the computational complexity and identify an algorithm that achieves this lower bound, then we know the computational complexity.
 

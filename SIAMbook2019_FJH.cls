@@ -7,12 +7,17 @@
 %% Revised 2015/02 index formatting
 %% Revised 2015/07/06 corrected ifpdf block page commands, added fix to algorithm environment
 %% Revised 2016/05/12, decreased text width to 29pc to allow for printer imposition errors
-
+%% Revised 2021/06/06, FJH added list of problems
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \ProvidesClass{SIAMGHbook2016}
               [2016/05/12 v2.1
  Customized LaTeX document class]
+ 
+ %%%FJH
+\RequirePackage{array,booktabs}
+%%%FJH
+
 \newcommand\@ptsize{}
 \newif\if@restonecol
 \newif\if@titlepage
@@ -895,6 +900,51 @@
     \@starttoc{lof}%
     \if@restonecol\twocolumn\fi
     }
+
+
+%_%_%_%_%
+%_%_%_%_%make list of problems by Fred Hickernell
+%_%_%_%_%
+\newcommand*\l@problem{\@dottedtocline{1}{0pt}{84pt}}
+\newcommand\listofproblems{%
+    \if@twocolumn
+      \@restonecoltrue\onecolumn
+    \else
+      \@restonecolfalse
+    \fi
+    \chapter*{List of Problems
+      \@mkboth{{List of Problems}}%
+              {{List of Problems}}}%
+    \@starttoc{lop}%
+    \if@restonecol\twocolumn\fi
+    }
+
+%\newlength{\problemwidth}
+%\newlength{\problemcolumnonewidth}
+%\newlength{\problemcolumntwowidth}
+%\setlength{\problemwidth}{0.8\textwidth}
+\newcounter{problemcounter}[chapter]
+%\numberwithin{problemcounter}{chapter}
+
+\newenvironment{problem}[1]{%
+%1 (optional) is width of first column
+%2 is problem caption
+%3 is parameters
+%4 is input
+%5 is output
+\refstepcounter{problemcounter}
+\renewcommand{\theproblemcounter}{\arabic{chapter}.\arabic{problemcounter}}
+\addcontentsline{lop}{problem}{\protect\numberline{\theproblemcounter}{\ignorespaces#1}}%
+\par\medskip
+\noindent  \rule{\textwidth}{1pt}
+\noindent \textbf{Problem~\theproblemcounter} \rmfamily #1 \\[-0.55\baselineskip]
+\noindent  \rule{\textwidth}{0.5pt} \par%
+\hspace{-2ex}}
+{\par \noindent \rule{\textwidth}{0.5pt} \par \medskip\smallskip}
+%%%%%%%%%%%%%%%%%
+% end of FJH added
+%%%%%%%%%%%%%%%%
+
 %_%_%_%_%
 %_%_%_%_%make list of algorithms
 %_%_%_%_%

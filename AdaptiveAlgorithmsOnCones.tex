@@ -1,4 +1,4 @@
-\documentclass{SIAMbook2019}
+\documentclass{SIAMbook2019_FJH}
 
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -65,32 +65,31 @@
 \renewcommand{\ttdefault}{txtt}
 \renewcommand\bfdefault{b}
 
-\newlength{\problemwidth}
+%\iffalse
+%\newlength{\problemwidth}
 \newlength{\problemcolumnonewidth}
 \newlength{\problemcolumntwowidth}
-\setlength{\problemwidth}{0.8\textwidth}
-\newcounter{problemcounter}[chapter]
+%\setlength{\problemwidth}{0.8\textwidth}
+%\newcounter{problemcounter}[chapter]
+%\numberwithin{problemcounter}{chapter}
 
-
-\newcommand{\problem}[5][0.4]{
+\newcommand{\problemspecs}[4][0.4]{%
 %1 (optional) is width of first column
-%2 is problem label
-%3 is parameters
-%4 is input
-%5 is output
-\setlength{\problemcolumnonewidth}{#1\problemwidth}
-\setlength{\problemcolumntwowidth}{\problemwidth}
+%2 is assumed
+%3 is input
+%4 is output
+\setlength{\problemcolumnonewidth}{#1\textwidth}
+\setlength{\problemcolumntwowidth}{\textwidth}
 \addtolength{\problemcolumntwowidth}{-\problemcolumnonewidth}
-\stepcounter{problemcounter}
-\begin{equation} \label{#2} \tag{Prob \thechapter.\theproblemcounter}
+\hspace{-2ex}%
 \begin{tabular}{>{\raggedright}p{\problemcolumnonewidth}>{\raggedright}p{\problemcolumntwowidth}}
     \textbf{Assumed} & \textbf{Output}  \tabularnewline
-    #3 \newline \newline
-    \textbf{Input} \newline #4
-    & #5
+    #2 \newline \newline
+    \textbf{Input} \newline #3
+    & #4
 \end{tabular}
-\end{equation}
 }
+%\fi
 
 
 \usepackage{algpseudocode}
@@ -132,6 +131,7 @@
 
 \listoffigures
 \listoftables
+\listofproblems
 \listofalgorithms
 
 \begin{thepreface}
@@ -142,19 +142,8 @@ This is the preface.
 \part{Illustrating Key Ideas}
 
 \input{WhyAdaptiveAlgorithms}
+\input{SingleZeroUnivariate}
 
-
-
-
-\chapter[Single Zero of a Univariate Function]%
-{Identifying a Single Zero of a Univariate Function}
-\index{Zeros!Univariate function!Single}
-\begin{chapterquote}[120pt]
-We have nothing to fear but fear itself.\\
----{\upshape Franklin D. Roosevelt}\\[6pt]
-I am not a crook.\\
----{\upshape Richard M. Nixon}
-\end{chapterquote}
 
 \end{document}
 
