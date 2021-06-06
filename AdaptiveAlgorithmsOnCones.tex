@@ -93,6 +93,27 @@
 }
 
 
+\usepackage{algpseudocode}
+\usepackage{algorithm, algorithmicx}
+\algnewcommand\algorithmicproblem{\textbf{Problem}}
+\algnewcommand\PROBLEM{\item[\algorithmicproblem]}
+\algnewcommand\algorithmicparam{\textbf{Parameters:}}
+\algnewcommand\PARAM{\item[\algorithmicparam]}
+\algnewcommand\algorithmicinput{\textbf{Input:}}
+\algnewcommand\INPUT{\item[\algorithmicinput]}
+\algnewcommand\RETURN{\State \textbf{Return }}
+\algnewcommand{\IfThen}[2]{% \IfThen{<if>}{<then>}{<else>}
+  \State \algorithmicif\ #1,\ \algorithmicthen\ #2}
+\algnewcommand{\IfThenElse}[3]{% \IfThenElse{<if>}{<then>}{<else>}
+  \State \algorithmicif\ #1\ \algorithmicthen\ #2\ \algorithmicelse\ #3}
+\algnewcommand\ErrorMsg[1]{\textbf{exit with error:\ } #1}
+
+
+
+
+
+
+
 \title{Adaptive Numerical Algorithms on Cones}
 \author{Fred J. Hickernell}
 \date{\today}
