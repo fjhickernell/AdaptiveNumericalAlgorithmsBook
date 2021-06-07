@@ -14,10 +14,6 @@
               [2016/05/12 v2.1
  Customized LaTeX document class]
  
- %%%FJH
-\RequirePackage{array,booktabs}
-%%%FJH
-
 \newcommand\@ptsize{}
 \newif\if@restonecol
 \newif\if@titlepage
@@ -905,7 +901,9 @@
 %_%_%_%_%
 %_%_%_%_%make list of problems by Fred Hickernell
 %_%_%_%_%
-\newcommand*\l@problem{\@dottedtocline{1}{0pt}{84pt}}
+%\newcommand*\l@figure{\@dottedtocline{1}{1.5em}{3.3em}}
+\newcommand*\l@NumProblem{\@dottedtocline{1}{1.5em}{3.3em}}
+%\newcommand*\l@NumProblem{\@dottedtocline{1}{0pt}{84pt}}
 \newcommand\listofproblems{%
     \if@twocolumn
       \@restonecoltrue\onecolumn
@@ -919,19 +917,17 @@
     \if@restonecol\twocolumn\fi
     }
 
-\newcounter{problem}[chapter]
-\newenvironment{problem}[1]{%
-\refstepcounter{problem}
-\renewcommand{\theproblem}{\thechapter.\arabic{problem}}
-\addcontentsline{lop}{problem}{\protect\numberline{\theproblem}{\ignorespaces#1}}%
+\newcounter{NumProblem}[chapter]
+\renewcommand{\theNumProblem}{\thechapter.\arabic{NumProblem}}
+\newenvironment{NumProblem}[1][\relax]{%
+\refstepcounter{NumProblem}
+\addcontentsline{lop}{NumProblem}{\protect\numberline{\theNumProblem}{\ignorespaces#1}}%
 \par\medskip
 \noindent  \rule{\textwidth}{1pt}
-\noindent \textbf{Problem~\theproblem} \rmfamily #1 \\[-0.55\baselineskip]
+\noindent \textbf{Problem~\theNumProblem} \rmfamily #1 \\[-0.55\baselineskip]
 \noindent  \rule{\textwidth}{0.5pt} \par%
 \hspace{-2ex}}
-{\par 
-Problem \theproblem \par
-\par \noindent \rule{\textwidth}{0.5pt} \par \medskip\smallskip}
+{\noindent \rule{\textwidth}{0.5pt} \par \medskip\smallskip}
 %%%%%%%%%%%%%%%%%
 % end of FJH added
 %%%%%%%%%%%%%%%%
@@ -939,7 +935,8 @@ Problem \theproblem \par
 %_%_%_%_%
 %_%_%_%_%make list of algorithms
 %_%_%_%_%
-\newcommand*\l@algorithm{\@dottedtocline{1}{0pt}{84pt}}
+\newcommand*\l@algorithm{\@dottedtocline{1}{1.5em}{3.3em}} %Fred Hickernell edit
+%\newcommand*\l@algorithm{\@dottedtocline{1}{0pt}{84pt}}
 \newcommand\listofalgorithms{%
     \if@twocolumn
       \@restonecoltrue\onecolumn

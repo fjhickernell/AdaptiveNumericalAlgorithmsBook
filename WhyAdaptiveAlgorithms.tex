@@ -1,18 +1,27 @@
 \chapter{Why Adaptive Numerical Algorithms}
-Numerical algorithms are crucial for solving mathematical problems that do not have analytic solutions.  Examples include finding zeros, evaluating integrals, or locating optima of functions, solving linear equations, and solving (stochastic/partial) differential equations.  Algorithms designers aim to construct procedures that provide a correct answer with a limited amount of computational effort.  
+Numerical algorithms are crucial for solving mathematical problems that do not have analytic solutions.  Examples include 
+\begin{itemize}
+    \item finding zeros of functions,
+    \item evaluating integrals,
+    \item constructing surrogates of functions that are expensive to evaluate,
+    \item optimizing functions,
+    \item solving linear equations, and
+    \item solving (stochastic/partial) differential equations.
+\end{itemize}
+Algorithms designers aim to construct procedures that provide a correct answer with a limited amount of computational effort.  
 
 These goals of accuracy and efficiency are often at odds.  Adaption allows us balance these two goals by inferring from function data how much computational effort is required.
 
 \section{Problem Definition}
 
 Success depends on the scope of problems that the algorithms are designed to solve.  To illustrate this, consider the problem of locating the zeros of functions:
-\begin{problem}{Finding one zero of a univariate function}\label{prob:findzero}
+\begin{NumProblem}[Finding one zero of a univariate function in $\cf$] \label{prob:findzero}
 \problemspecs[0.45]%
 {set of functions $\cf$}%
 {black-box function $f \in \cf$ \\ tolerance $\varepsilon > 0$ }%
 {$x_0$ such that $f(x) = 0$ \\ 
     \qquad for some $x \in [x_0 - \varepsilon, x_0 + \varepsilon]$}
-\end{problem}
+\end{NumProblem}
 
 The assumptions and the output define the problem to be solved and are also used to define the algorithm. A successful algorithm must take any input satisfying the assumptions and return the desired output.   The user should be assured that the output is accurate, provided the assumptions are met.  Note that the output will normally not be an exact answer, but an answer satisfying an error tolerance.  In the case above it is an absolute error tolerance.
 
@@ -63,7 +72,7 @@ If $\cf$ consists of continuous functions defined on $[a,b]$ where $f(a)$ and $f
 
 Bisection Algorithm \ref{alg:zeroBisection} has a few notable features that set it apart the previous two problem/algorithm pairs.  The set of functions for which it succeeds is much broader.  Algorithm \ref{alg:zeroBisection} does not provide an exact answer.  Indeed no algorithm can for this choice of $\cf$. But, the error criterion is satisfied. 
 
-We emphasize that algorithms must be matched to the problem definition.  The problem definition specifies our assumptions, and the algorithm is expected to succeed under those assumptions.  If the problem definition is altered, then our algorithm may be invalid.  If the assumptions are violated, then our algorithm may fail.  For Algorithm \ref{alg:zeroBisection} we can detect some cases in which a $f$ input into the algorithm falls outside $\cf$, such as if the function values at $a$ and $b$ are the same.  However, we cannot always detect whether $f$ falls outside $\cf$.  If $f$ has a jump discontinuity from negative to positive values, then Algorithm \ref{alg:zeroBisection} may converge on the jump, even if a true zero exists elsewhere.
+We emphasize that algorithms must be matched to the problem definition.  The problem definition specifies our assumptions, and the algorithm is expected to succeed under those assumptions.  If the problem definition is altered, then our algorithm may be invalid.  If the assumptions are violated, then our algorithm may fail.  For Algorithm \ref{alg:zeroBisection} we can detect some cases in which a $f$ input into the algorithm falls outside $\cf$, such as if the function values at $a$ and $b$ are the same.  However, we cannot always detect whether $f$ falls outside $\cf$.  If $f$ has a jump discontinuity from negative to positive values, then Algorithm \ref{alg:zeroBisection} may return an $x_0$ near the jump, even if a true zero exists elsewhere.
 
 For simplicity our algorithm listings do not include all the error-checking that a well coded algorithm would have.  For example, in implementing Algorithm \ref{alg:zeroBisection} one should also include checks that $a< b$, as implied by the definition of $\cf$.
 
@@ -71,13 +80,13 @@ For simplicity our algorithm listings do not include all the error-checking that
 
 Algorithm \ref{alg:zeroBisection} is adaptive in the selection of points where $f$ is evaluated; different $f$ may result in different choices of $x_{\text{new}}$, which are chosen strategically. The \emph{computational cost} of an algorithm is defined as the number of the arithmetic operations required to produce the output.  Adaptive Algorithm \ref{alg:zeroBisection} has a computational cost of $\Order\bigl(\log((b-a)/\varepsilon)\bigr)$.  A smaller tolerance demands more arithmetic operations, which translate into more time.
 
-One can imagine a non-adaptive algorithm that evaluates $f$ at  equally spaced $2\varepsilon$ apart on $[a,b]$ and returns $x_0$ as the midpoint of the subinterval where $f$ changes sign.  Such an algorithm would have a computational cost of $\Order\bigl((b-a)/\varepsilon\bigr)$, which is much greater as $\varepsilon \to 0$.  Hence, this non-adaptive algorithm is much less efficient.   
+One can imagine a non-adaptive algorithm that evaluates $f$ at  equally spaced $2\varepsilon$ apart on $[a,b]$ and returns $x_0$ as the midpoint of the subinterval where $f$ changes sign.  Such an algorithm would have a computational cost of $\Order\bigl((b-a)/\varepsilon\bigr)$, which is much greater than $\Order\bigl(\log((b-a)/\varepsilon)\bigr)$ as $\varepsilon \to 0$.  Hence, this non-adaptive algorithm is much less efficient.   
 
 The \emph{computational complexity} of a problem is the minimum computational cost over all algorithms that can solve it.  As with computational cost, we are typically satisfied with finding the order, not the exact expression.  We will show in ?? that the computational complexity of Problem \ref{prob:findzero} with $\cf = \{C[a,b] : f(a)f(b) \le 0\}$ is $\Order\bigl(\log((b-a)/\varepsilon)\bigr)$, making Algorithm \ref{alg:zeroBisection} (asymptotically) optimal.
 
 Since $a$ and $b$ are assumed fixed in Algorithm \ref{alg:zeroBisection}, the number of function evaluations is always the same for the same tolerance, $\varepsilon$.  We can broaden the problem by making $a$ and $b$ inputs as follows:
 
-\begin{problem}{Finding one zero of a univariate continuous function}%
+\begin{NumProblem}[Finding one zero of a univariate continuous function]%
 \label{prob:findzerocont}
 \problemspecs[0.45]%
 {$\cf = \bigcup_{a < b} C[a,b]$}%
@@ -87,28 +96,31 @@ $a$ and $b$ with $f \in C[a,b]$ \\
 tolerance $\varepsilon > 0$ }%
 {$x_0$ such that $f(x) = 0$ \\ 
     \qquad for some $x \in [x_0 - \varepsilon, x_0 + \varepsilon]$}
-\end{problem}
+\end{NumProblem}
 
 \begin{algorithm}
 \caption{Bisection for Problem \ref{prob:findzerocont}  \label{alg:zeroBisectionAB}}
 This is the same as Algorithm \ref{alg:zeroBisection} but with $a$ and $b$ now inputs.
 \end{algorithm}
 
-Since this algorithm is the same as the previous one, the computational cost remains the same, i.e., $\Order\bigl(\log((b-a)/\varepsilon)\bigr)$ as $(b-a)/\varepsilon \to \infty$.  Explicitly including the inputs $a$ and $b$ in the computational cost formula is more informative than just assuming them to be constant.
+Since this algorithm is the same as the previous one, the computational cost remains the same, i.e., $\Order\bigl(\log((b-a)/\varepsilon)\bigr)$ as $(b-a)/\varepsilon \to \infty$.  Explicitly including the inputs $a$ and $b$ in the computational cost formula is more informative than just assuming them to be constant.  The computational cost may be quite different if the tolerance is specified relative to $b-a$ versus absolutely.
 
-Again, we stress how the computational complexity of a problem and the computational cost required to solve it depend on the problem definition.  Algorithms \ref{alg:zero2947} and  \ref{alg:zeroLinear} have a computational cost of $\Order(1)$, however again, they solve very simple problems.  Problems \ref{prob:findzero} and \ref{prob:findzerocont} only require one zero to be found.  Finding all zeros of a function is a harder problem that is addressed in ???  If in  $\cf$ Problem \ref{prob:findzerocont} the requirement that $f(a) f(b) \le 0$ is dropped, then the problem may have no solution.
+We stress how the computational complexity of a problem and the computational cost required to solve it depend on the problem definition.  Algorithms \ref{alg:zero2947} and  \ref{alg:zeroLinear} have a computational cost of $\Order(1)$, however again, they solve very simple problems.  Problems \ref{prob:findzero} and \ref{prob:findzerocont} only require one zero to be found.  Finding all zeros of a function is a harder problem that is addressed in ???  If in  $\cf$ Problem \ref{prob:findzerocont} the requirement that $f(a) f(b) \le 0$ is dropped, then the problem may have no solution. 
 
-
-
-
+We may also measure the information cost, or the number of function values required.  The computational cost and the information cost may be of the same order.  However, in some cases, the cost of obtaining one function value may be orders of magnitude greater than an ordinary arithmetic operation in terms of clock time.  This can happen when a function value is the result of an expensive simulation.  In such cases we may distinguish between the information cost and the total computational cost.
 
 
 
+\begin{figure}
+    \centering
+    Dummy figure
+    \caption{Caption}
+    \label{fig:my_label}
+\end{figure}
 
-
-If there is at least one algorithm that can solve a problem, then we would prefer the most efficient one.  Efficiency can be measured in wall clock time, but this can vary with software and hardware implementations.  The \emph{computational cost} or the arithmetic operations required is a reasonable way to measure the efficiency of an algorithm. 
-
-The cost of the most efficient algorithm possible is called the \emph{computational complexity} of the problem.  If we can derive a lower bound on the computational complexity and identify an algorithm that achieves this lower bound, then we know the computational complexity.
-
-We may also measure the information cost, or the number of function values required.  These two may be of similar order
-
+\begin{table}[]
+    \centering
+   Dummy table
+    \caption{Caption}
+    \label{tab:my_label}
+\end{table}

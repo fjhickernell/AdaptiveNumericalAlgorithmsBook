@@ -65,23 +65,20 @@
 \renewcommand{\ttdefault}{txtt}
 \renewcommand\bfdefault{b}
 
-%\iffalse
-%\newlength{\problemwidth}
 \newlength{\problemcolumnonewidth}
 \newlength{\problemcolumntwowidth}
-%\setlength{\problemwidth}{0.8\textwidth}
-%\newcounter{problemcounter}[chapter]
-%\numberwithin{problemcounter}{chapter}
-
+\newlength{\problemindent}
 \newcommand{\problemspecs}[4][0.4]{%
 %1 (optional) is width of first column
 %2 is assumed
 %3 is input
 %4 is output
+\setlength{\problemindent}{2ex}
 \setlength{\problemcolumnonewidth}{#1\textwidth}
 \setlength{\problemcolumntwowidth}{\textwidth}
 \addtolength{\problemcolumntwowidth}{-\problemcolumnonewidth}
-\hspace{-2ex}%
+\addtolength{\problemcolumntwowidth}{-\problemindent}
+\hspace{-\problemindent}%
 \begin{tabular}{>{\raggedright}p{\problemcolumnonewidth}>{\raggedright}p{\problemcolumntwowidth}}
     \textbf{Assumed} & \textbf{Output}  \tabularnewline
     #2 \newline \newline
@@ -89,7 +86,7 @@
     & #4
 \end{tabular}
 }
-%\fi
+
 
 
 \usepackage{algpseudocode}
