@@ -7,10 +7,15 @@
 \usepackage{graphicx}
 \usepackage{makeidx}
 \usepackage{multicol}
+\usepackage{hyperref}
+\usepackage[capitalize]{cleveref}
 %\usepackage{subeqn}
 \input{FJHDef}
 
 \makeindex
+
+\crefname{NumProblem}{Problem}{Problems}
+
 
 % definitions used by included articles, reproduced here for
 % educational benefit, and to minimize alterations needed to be made
@@ -136,10 +141,19 @@ This is the preface.
 \end{thepreface}
 
 \mainmatter
-\part{Illustrating Key Ideas}
+\input{Part_1/IllustratingKey}
+\input{Part_1/WhyAdaptiveAlgorithms}
+\input{Part_1/SingleZeroUnivariate}
+\input{Part_1/AllZerosUnivariate}
+\input{Part_1/RelativeError}
 
-\input{WhyAdaptiveAlgorithms}
-\input{SingleZeroUnivariate}
+
+\bibliographystyle{amsplain}
+\bibliography{FJHown23,FJH23}
+
+\cleardoublepage
+
+\printindex
 
 
 \end{document}
