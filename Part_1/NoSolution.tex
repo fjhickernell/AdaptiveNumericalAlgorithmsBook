@@ -1,0 +1,36 @@
+\chapter{When Numerical Problems Have No Solution} \label{chap:NoSolution}
+
+There are a variety of problems involving mathematics.  A \emph{mathematics} problem is defined by in terms of mathematical notation with a specified outcome required, e.g., 
+\begin{gather}\label{eq:mathzero}
+    \text{given } f \in C[a,b],  \quad \text{find } x \text{ satisfying } f(x) = 0, \\
+    \label{eq:uniIntegral}
+    \text{given } f \in C[a,b],  \quad \text{find } \int_a^b f(x) \dif x.
+\end{gather} 
+One may specify necessary and sufficient conditions under which solutions exist and/or existence.  There exists a solution to \eqref{eq:mathzero} if $f(a) \le 0 \le f(b)$.  This solution is unique if $f$ is strictly increasing.  There exists a unique solution to \eqref{eq:uniIntegral}.
+
+If \eqref{eq:mathzero} appeared on a secondary school test, $f$ would likely be expressed in terms of elementary functions and the expected answer would be an analytic one.  The same might be the case for \eqref{eq:uniIntegral} on a calculus test.  The conditions under which this is possible are studied by those developing symbolic computation software.  
+
+Before arriving at a mathematical statement of a problem, one might be faced with the problem posed in words.  Interpretation of the words and a certain amount of mathematical modeling might be required to reduce the problem to a mathematical one.  The determination of whether or not a solution is found might be judged on practical or subjective grounds.
+
+The numerical problems introduced in \cref{chap:ProbAlgo} differ from mathematical problems in that they require an approximate solution satisfying an error criterion.  They take the following form:
+\begin{NumProblem}[Generic Problem]
+\label{prob:generalProblem}
+\problemspecs{set of functions $\cf$ \\ 
+solution operator $\sol: \cf \to \cg$}
+{black-box function $f \in \cf$ \\ error tolerance $\varepsilon > 0$}
+{$\app(f,\varepsilon) \in \cg$ that is within $\varepsilon$ of the \\ \qquad true solution $\sol(f)$}
+\end{NumProblem}
+Here $\cg$ is the set of possible solutions.  It corresponds to $[a,b]$ in mathematical problem \eqref{eq:mathzero} and $\reals$ in mathematical problem \eqref{eq:uniIntegral}.  The wording ``within $\varepsilon$'' is interpreted in light of the specific error criterion.
+In defining the problem, it is important that $\cf$ be defined large enough so that the successful algorithm is widely applicable.  However, it is also important that $\cf$ be constrained so that a successful algorithm exists.  
+
+The following meta-theorem provides condition under which \cref{prob:generalProblem} is unsolvable.
+
+\begin{theorem}[When No Solution Exists] \label{thm:impossible}
+Suppose that a numerical problem takes the form \cref{prob:generalProblem}.  Fix some acceptable tolerance, $\varepsilon$.  If for every $n \in \naturals$ and every possible $\vx_1, \ldots, \vx_n$ in the union of the domains of the functions in $\cf$, one can identify two distinct fooling functions $f_1, f_2 \in \cf$ with the same function data but quite different solutions, i.e.,
+\begin{gather} \label{eq:bumpfunctionsmatch}
+    f_1(\vx_1) = f_2(\vx_1), \ldots,  f_1(\vx_n) = f_2(\vx_n), \text{ and} \\
+    \label{eq:solutionsfar}
+    \sol(f_1) \text{ and } \sol(f_2) \text{ cannot both be within $\varepsilon$ of the same element in $\cg$},
+\end{gather}
+then \cref{prob:generalProblem} has no solution.  That is, no algorithm can solve this problem.
+\end{theorem}

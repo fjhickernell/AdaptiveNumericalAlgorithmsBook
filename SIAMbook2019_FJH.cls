@@ -928,9 +928,12 @@
 \noindent  \rule{\textwidth}{0.5pt} \par%
 \hspace{-2ex}}
 {\noindent \rule{\textwidth}{0.5pt} \par \medskip\smallskip}
+
+
 %%%%%%%%%%%%%%%%%
 % end of FJH added
 %%%%%%%%%%%%%%%%
+
 
 %_%_%_%_%
 %_%_%_%_%make list of algorithms

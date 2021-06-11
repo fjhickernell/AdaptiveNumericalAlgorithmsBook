@@ -2,6 +2,7 @@
 
 \usepackage{amsmath}
 \usepackage{amssymb}
+%\usepackage{thmtools}
 \usepackage{array,booktabs}
 \usepackage{epsfig}
 \usepackage{graphicx}
@@ -11,6 +12,9 @@
 \usepackage[capitalize]{cleveref}
 %\usepackage{subeqn}
 \input{FJHDef}
+
+\DeclareMathOperator{\app}{app}
+\DeclareMathOperator{\sol}{sol}
 
 \makeindex
 
@@ -135,6 +139,7 @@
 \listoftables
 \listofproblems
 \listofalgorithms
+%\listoftheorems
 
 \begin{thepreface}
 This is the preface.
@@ -146,7 +151,7 @@ This is the preface.
 \input{Part_1/SingleZeroUnivariate}
 \input{Part_1/AllZerosUnivariate}
 \input{Part_1/RelativeError}
-
+\input{Part_1/NoSolution}
 
 \bibliographystyle{amsplain}
 \bibliography{FJHown23,FJH23}
