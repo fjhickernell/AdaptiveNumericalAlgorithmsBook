@@ -1,1 +1,13 @@
-\chapter{Relative and Mixed Error Criteria} \label{chap:relerror}
+\chapter{Various Error Criteria} \label{chap:relerror}
+The error criterion in \cref{prob:findzero} requires that the location of one zero of the function to be identified within an interval of half-width $\varepsilon$.  The true solution of $f(x) = 0$ can be written as the set $f^{-1}(0)$.  If the zero-finding algorithm outputs $x_0$, which we may also represent as the set $\{x_0\}$, then the true error of the output is $\dist\bigl(\{x_0\},f^{-1}(0)\bigr)$, where the distance here can be defined as the infimum of the distance between pairwise points: $\dist(\cx,\cy) := \inf_{x \in \cx, y \in \cy} \abs{x-y}$.
+
+
+
+It can be written as
+\begin{equation}
+    \crit\bigl(x_0,f^{-1}(0),\varepsilon\bigr) = 
+    \begin{cases} \true, & f^{-1}(0) \cap [x_0 - \varepsilon, x_0 + \varepsilon] \ne \emptyset,\\
+    \false, & \text{otherwise}
+    \end{cases}
+\end{equation}
+Here $f^{-1}(0)$ denotes the set of all zeros of the function $f$.  An algorithm succeeds in solving \cref{prob:findzero} if the output, $x_0$, causes $\crit\bigl(x_0,f^{-1}(0),\varepsilon\bigr)$ to be $\true$.  The criterion above is an absolute error criterion.

@@ -17,8 +17,8 @@ The numerical problems introduced in \cref{chap:ProbAlgo} differ from mathematic
 \label{prob:generalProblem}
 \problemspecs{set of functions $\cf$ \\ 
 solution operator $\sol: \cf \to \cg$}
-{black-box function $f \in \cf$ \\ error tolerance $\varepsilon > 0$}
-{$\app(f,\varepsilon) \in \cg$ that is within $\varepsilon$ of the \\ \qquad true solution $\sol(f)$}
+{black-box function $f \in \cf$ \\ error tolerance (vector) $\veps$}
+{$\out \in \cg$ such that \\ \qquad $\crit(\out,\sol(f),\veps) = \true$}
 \end{NumProblem}
 Here $\cg$ is the set of possible solutions.  It corresponds to $[a,b]$ in mathematical problem \eqref{eq:mathzero} and $\reals$ in mathematical problem \eqref{eq:uniIntegral}.  The wording ``within $\varepsilon$'' is interpreted in light of the specific error criterion.
 In defining the problem, it is important that $\cf$ be defined large enough so that the successful algorithm is widely applicable.  However, it is also important that $\cf$ be constrained so that a successful algorithm exists.  
@@ -26,11 +26,11 @@ In defining the problem, it is important that $\cf$ be defined large enough so t
 The following meta-theorem provides condition under which \cref{prob:generalProblem} is unsolvable.
 
 \begin{theorem}[When No Solution Exists] \label{thm:impossible}
-Suppose that a numerical problem takes the form \cref{prob:generalProblem}.  Fix some acceptable tolerance, $\varepsilon$.  If for every $n \in \naturals$ and every possible $\vx_1, \ldots, \vx_n$ in the union of the domains of the functions in $\cf$, one can identify two distinct fooling functions $f_1, f_2 \in \cf$ with the same function data but quite different solutions, i.e.,
+Suppose that a numerical problem takes the form of \cref{prob:generalProblem}.  Fix some acceptable tolerance, $\veps$.  If for every $n \in \naturals$ and every possible $\vx_1, \ldots, \vx_n$ in the union of the domains of the functions in $\cf$, one can identify two distinct fooling functions $f_1, f_2 \in \cf$ with the same function data but quite different solutions, i.e.,
 \begin{gather} \label{eq:bumpfunctionsmatch}
     f_1(\vx_1) = f_2(\vx_1), \ldots,  f_1(\vx_n) = f_2(\vx_n), \text{ and} \\
     \label{eq:solutionsfar}
-    \sol(f_1) \text{ and } \sol(f_2) \text{ cannot both be within $\varepsilon$ of the same element in $\cg$},
+    \{\out \in \cg : \crit(\out,\sol(f_1),\veps) \land \crit(\out,\sol(f_2),\veps) = \true \} =\emptyset,
 \end{gather}
 then \cref{prob:generalProblem} has no solution.  That is, no algorithm can solve this problem.
 \end{theorem}
