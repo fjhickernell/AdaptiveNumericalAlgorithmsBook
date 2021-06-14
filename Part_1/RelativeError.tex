@@ -1,13 +1,40 @@
 \chapter{Various Error Criteria} \label{chap:relerror}
-The error criterion in \cref{prob:findzero} requires that the location of one zero of the function to be identified within an interval of half-width $\varepsilon$.  The true solution of $f(x) = 0$ can be written as the set $f^{-1}(0)$.  If the zero-finding algorithm outputs $x_0$, which we may also represent as the set $\{x_0\}$, then the true error of the output is $\dist\bigl(\{x_0\},f^{-1}(0)\bigr)$, where the distance here can be defined as the infimum of the distance between pairwise points: $\dist(\cx,\cy) := \inf_{x \in \cx, y \in \cy} \abs{x-y}$.
+The error criterion in \cref{prob:findzerocont} requires that the location of one zero of the function to be identified within an interval of half-width $\varepsilon$.  The true solution of $f(x) = 0$ can be written as the set $f^{-1}(0)$.  If the zero-finding algorithm outputs $x_0$, which we may also represent as the set $\{x_0\}$, then the true error of the output is $\dist\bigl(\{x_0\},f^{-1}(0)\bigr)$, where the distance here can be defined as the infimum of the distance between pairwise points: $\dist(\cx,\cy) := \inf_{x \in \cx, y \in \cy} \abs{x-y}$.
 
+In practice, it is not possible to know the true error, but an algorithm will construct a region in which the solution lies.  For \cref{alg:zeroBisectionAB} at each step, the interval $[x_{\text{left}}, x_{\text{right}}]$ contains a zero of the function $f$.  Thus, for any possible output, $x_0$, the data-driven upper bound on the error is 
+\begin{equation} \label{eq:fzeroerrbd}
+    \err\bigl(x_0,[x_{\text{left}},x_{\text{right}}]\bigr) := \max\bigl(\abs{x_0 - x_{\text{left}}} ,\abs{x_0 - x_{\text{right}}} \bigr) \ge \dist\bigl(\{x_0\},f^{-1}(0)\bigr).
+\end{equation}
 
-
-It can be written as
+The absolute error criterion in \cref{prob:findzerocont} can be expressed as $\dist\bigl(\{x_0\},f^{-1}(0)\bigr) \le \varepsilon$.  Given the upper bound on the true error in \eqref{eq:fzeroerrbd}, one can construct a data-driven stopping criterion as
 \begin{equation}
-    \crit\bigl(x_0,f^{-1}(0),\varepsilon\bigr) = 
-    \begin{cases} \true, & f^{-1}(0) \cap [x_0 - \varepsilon, x_0 + \varepsilon] \ne \emptyset,\\
-    \false, & \text{otherwise}
+    \datacrit\bigl(x_0,[x_{\text{left}},x_{\text{right}}],\varepsilon\bigr) = 
+    \begin{cases} \true, & \err\bigl(x_0,[x_{\text{left}},x_{\text{right}}]\bigr) \le \varepsilon,\\
+    \false, & \text{otherwise}.
     \end{cases}
 \end{equation}
-Here $f^{-1}(0)$ denotes the set of all zeros of the function $f$.  An algorithm succeeds in solving \cref{prob:findzero} if the output, $x_0$, causes $\crit\bigl(x_0,f^{-1}(0),\varepsilon\bigr)$ to be $\true$.  The criterion above is an absolute error criterion.
+Choosing $x_0 = (x_{\text{left}}+x_{\text{right}})/2$ as is done in \cref{alg:zeroBisectionAB} gives the criterion the best chance of being $\true$.  When this choice makes the data-driven criterion true, \cref{alg:zeroBisectionAB} stops.
+
+Let's generalize the zero-finding situation to a more general numerical problem.
+
+\begin{NumProblem}[Generic Problem]
+\label{prob:generalProblem}
+\problemspecs{set of functions $\cf$ \\ 
+solution operator $\sol: \cf \to \cg$}
+{black-box function $f \in \cf$ \\ error tolerance (vector) $\veps$}
+{$\out \in \cg$ such that \\ \qquad $\crit(\out,\sol(f),\veps) = \true$}
+\end{NumProblem}
+In defining the problem, it is important that $\cf$ be defined large enough so that the successful algorithm is widely applicable.  However, it is also important that $\cf$ be constrained so that a successful algorithm exists.  In \cref{prob:findzerocont} $\cf$ corresponds to all continuous functions where the function has opposite signs at the endpoints of the defining interval.  Here, $\cg$ is the set of possible solutions.  It corresponds to all subsets of real numbers for \cref{prob:findzerocont}.  
+
+The absolute error criterion in \cref{prob:findzero} that the output, $x_0$, must satisfy can be expressed as 
+\begin{equation}
+    \crit\bigl(x_0,f^{-1}(0),\varepsilon\bigr) = 
+    \begin{cases} \true, & \dist\bigl(\{x_0\},f^{-1}(0)\bigr) \le \varepsilon,\\
+    \false, & \text{otherwise}.
+    \end{cases}
+\end{equation}
+
+
+
+
+
