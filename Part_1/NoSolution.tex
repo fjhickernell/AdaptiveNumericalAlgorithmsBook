@@ -13,6 +13,7 @@ If \eqref{eq:mathzero} appeared on a secondary school test, $f$ would likely be 
 Before arriving at a mathematical statement of a problem, one might be faced with the problem posed in words.  Interpretation of the words and a certain amount of mathematical modeling might be required to reduce the problem to a mathematical one.  The determination of whether or not a solution is found might be judged on practical or subjective grounds.
 
 The numerical problems introduced in \cref{chap:ProbAlgo} differ from mathematical problems in that they require an approximate solution satisfying an error criterion.  They take the following form:
+\iffalse
 \begin{NumProblem}[Generic Problem]
 \label{prob:generalProblem}
 \problemspecs{set of functions $\cf$ \\ 
@@ -20,6 +21,7 @@ solution operator $\sol: \cf \to \cg$}
 {black-box function $f \in \cf$ \\ error tolerance (vector) $\veps$}
 {$\out \in \cg$ such that \\ \qquad $\crit(\out,\sol(f),\veps) = \true$}
 \end{NumProblem}
+\fi
 Here $\cg$ is the set of possible solutions.  It corresponds to $[a,b]$ in mathematical problem \eqref{eq:mathzero} and $\reals$ in mathematical problem \eqref{eq:uniIntegral}.  The wording ``within $\varepsilon$'' is interpreted in light of the specific error criterion.
 In defining the problem, it is important that $\cf$ be defined large enough so that the successful algorithm is widely applicable.  However, it is also important that $\cf$ be constrained so that a successful algorithm exists.  
 

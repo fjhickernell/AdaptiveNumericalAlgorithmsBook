@@ -1,34 +1,64 @@
 \chapter{Various Error Criteria} \label{chap:relerror}
-The error criterion in \cref{prob:findzerocont} requires that the location of one zero of the function to be identified within an interval of half-width $\varepsilon$.  The true solution of $f(x) = 0$ can be written as the set $f^{-1}(0)$.  If the zero-finding algorithm outputs $x_0$, which we may also represent as the set $\{x_0\}$, then the true error of the output is $\dist\bigl(\{x_0\},f^{-1}(0)\bigr)$, where the distance here can be defined as the infimum of the distance between pairwise points: $\dist(\cx,\cy) := \inf_{x \in \cx, y \in \cy} \abs{x-y}$.
-
-In practice, it is not possible to know the true error, but an algorithm will construct a region in which the solution lies.  For \cref{alg:zeroBisectionAB} at each step, the interval $[x_{\text{left}}, x_{\text{right}}]$ contains a zero of the function $f$.  Thus, for any possible output, $x_0$, the data-driven upper bound on the error is 
-\begin{equation} \label{eq:fzeroerrbd}
-    \err\bigl(x_0,[x_{\text{left}},x_{\text{right}}]\bigr) := \max\bigl(\abs{x_0 - x_{\text{left}}} ,\abs{x_0 - x_{\text{right}}} \bigr) \ge \dist\bigl(\{x_0\},f^{-1}(0)\bigr).
-\end{equation}
-
-The absolute error criterion in \cref{prob:findzerocont} can be expressed as $\dist\bigl(\{x_0\},f^{-1}(0)\bigr) \le \varepsilon$.  Given the upper bound on the true error in \eqref{eq:fzeroerrbd}, one can construct a data-driven stopping criterion as
-\begin{equation}
-    \datacrit\bigl(x_0,[x_{\text{left}},x_{\text{right}}],\varepsilon\bigr) = 
-    \begin{cases} \true, & \err\bigl(x_0,[x_{\text{left}},x_{\text{right}}]\bigr) \le \varepsilon,\\
+The error criterion in \cref{prob:findzerocont} requires that the location of one zero of the function be identified within an interval of half-width $\varepsilon$.  The true solution of $f(x) = 0$ can be written as the set $f^{-1}(0)$.  If the zero-finding algorithm outputs $x_0$, then the true error of the output is $\dist\bigl(x_0,f^{-1}(0)\bigr)$, where the distance here is between a point and a set of points: $\dist(x,\cy) := \inf_{y \in \cy} \abs{x-y}$. The absolute error criterion in \cref{prob:findzerocont} that the output, $x_0$, must satisfy can be expressed as 
+\begin{equation} \label{eq:fzeroerrorcrit}
+    \crit\bigl(x_0,f^{-1}(0),\varepsilon\bigr) = 
+    \begin{cases} \true, & \dist\bigl(x_0,f^{-1}(0)\bigr) \le \varepsilon,\\
     \false, & \text{otherwise}.
     \end{cases}
 \end{equation}
-Choosing $x_0 = (x_{\text{left}}+x_{\text{right}})/2$ as is done in \cref{alg:zeroBisectionAB} gives the criterion the best chance of being $\true$.  When this choice makes the data-driven criterion true, \cref{alg:zeroBisectionAB} stops.
 
-Let's generalize the zero-finding situation to a more general numerical problem.
+In practice, it is not possible to know the true error of the output, but \cref{alg:zeroBisectionAB} iteratively refines the interval $[x_{\text{left}}, x_{\text{right}}]$ that must contain at least one zero of $f$. 
+The data-driven stopping criterion for \cref{alg:zeroBisectionAB} may be expressed by replacing the true solution by the all possible partial solutions as
+\begin{equation}
+    \datacrit\bigl(x_0,[x_{\text{left}},x_{\text{right}}],\varepsilon\bigr) = 
+    \begin{cases} \true, & \crit\bigl(x_0,x,\varepsilon\bigr) = \true \ \forall x \in [x_{\text{left}},x_{\text{right}}] ,\\
+    \false, & \text{otherwise},
+    \end{cases}
+\end{equation}
+Since the second argument in $\crit$ as defined in \eqref{eq:fzeroerrorcrit} is a set, but the second argument in $\crit$ here is a point, we must extend the definition of $\crit$ and $\dist$ appropriately since only one zero is required.
 
-\begin{NumProblem}[Generic Problem]
+Choosing $x_0 = (x_{\text{left}}+x_{\text{right}})/2$ as is done in \cref{alg:zeroBisectionAB} gives the stopping criterion the best chance of being $\true$.  When $\datacrit\bigl(x_0,[x_{\text{left}},x_{\text{right}}],\varepsilon\bigr) = \true$, then \cref{alg:zeroBisectionAB} stops and returns $x_0$.
+
+In some cases, the practitioner may wish to choose a different kind of error criterion than an absolute one, such as a relative error criterion or one involving a combination of absolute and relative error tolerances.  In such cases, choosing the middle of the interval containing the solution may be not be best.  In this chapter we explore various error criteria, their corresponding stopping criteria, and the choices of outputs.
+
+\section{A Generic Numerical Problem and Template Algorithm}
+
+Let's generalize the zero-finding situation to a generic numerical problem.  As before, we let $\cf$ denote the set of input functions, which must be large enough so that the successful algorithm is widely applicable but constrained so that a successful algorithm exists. The set of possible solutions is denoted $\cg$.  In \cref{prob:findzerocont} $\cf$ corresponds to all continuous functions on closed, bounded intervals where the function has opposite signs at the endpoints of the defining interval, and $\cg$ corresponds to all closed, bounded subsets of real numbers.
+
+\begin{NumProblem}[Generic Numerical Problem]
 \label{prob:generalProblem}
 \problemspecs{set of functions $\cf$ \\ 
 solution operator $\sol: \cf \to \cg$}
 {black-box function $f \in \cf$ \\ error tolerance (vector) $\veps$}
 {$\out \in \cg$ such that \\ \qquad $\crit(\out,\sol(f),\veps) = \true$}
 \end{NumProblem}
-In defining the problem, it is important that $\cf$ be defined large enough so that the successful algorithm is widely applicable.  However, it is also important that $\cf$ be constrained so that a successful algorithm exists.  In \cref{prob:findzerocont} $\cf$ corresponds to all continuous functions where the function has opposite signs at the endpoints of the defining interval.  Here, $\cg$ is the set of possible solutions.  It corresponds to all subsets of real numbers for \cref{prob:findzerocont}.  
 
-The absolute error criterion in \cref{prob:findzero} that the output, $x_0$, must satisfy can be expressed as 
+
+Next we define a template \cref{alg:template}.  The algorithm works with with a set of possible (partial) true solutions, $\cs$, initialized to $\cs_0$, which corresponds to (a subset of) $\cg$.  The set $\cs$ also serves as a set of possible algorithm outputs.  For \cref{alg:zeroBisectionAB}, $\cg$ corresponds to all subsets of $\reals$, but since only one zero is required, $\cs$ is the interval $[x_{\text{left}},x_{\text{right}}]$, which is initialized to $[a,b]$. 
+
+At each iteration, the algorithm samples the input function further and shrinks the set $\cs$.  A data-based stopping criterion is defined as 
 \begin{equation}
-    \crit\bigl(x_0,f^{-1}(0),\varepsilon\bigr) = 
+    \datacrit(\out,\cs,\varepsilon) = \begin{cases} \true, & \crit(\out,\sol,\varepsilon) = \true \quad \forall \sol \in \cs, \\ \false, & \text{otherwise} .
+    \end{cases}
+\end{equation}
+When $\cs$ becomes small enough so that an output exists that $\out$ exists that makes the stopping criterion $\true$, then the algorithm terminates.
+
+\begin{algorithm}[H]
+\caption{Template algorithm for \cref{prob:generalProblem} \label{alg:template}}
+	\begin{algorithmic}
+   \State Initialize $\cs$, the set containing (enough of) $\sol$, to be $\cs_0$
+   \State Shrink $\cs$ based on an initial sample of $f$
+    \Repeat 
+    \State Shrink $\cs$ further based on further sampling of $f$
+    \State Choose $\out$ optimally
+    \Until $\datacrit(\out,\cs,\varepsilon) = \true$
+    \RETURN $\out$
+    \end{algorithmic}
+\end{algorithm}
+
+The absolute error criterion defined in \eqref{eq:fzeroerrorcrit} is an example of an absolute error criterion, which takes the form in the first row of \cref{tab:errorcrit}.  It is defined in terms of a distance between possible outputs and possible solutions, $\crit: \cs_0 \to \cg$.
+\begin{equation} \label{eq:fzeroerrorcrit}
+    \crit\bigl(\out,\sol(0),\varepsilon\bigr) = 
     \begin{cases} \true, & \dist\bigl(\{x_0\},f^{-1}(0)\bigr) \le \varepsilon,\\
     \false, & \text{otherwise}.
     \end{cases}
@@ -36,5 +66,23 @@ The absolute error criterion in \cref{prob:findzero} that the output, $x_0$, mus
 
 
 
+of the general case defined in the first row of \cref{tab:errorcrit}.
+\begin{table}[H]
+    \centering
+    \caption{Conditions under which the error criterion is true and the corresponding optimal output}
+    \begin{equation*}
+       \begin{array}{cc}
+         \crit(\out,\sol,\varepsilon)
+         & \out\\ \toprule
+         \dist(\out,\sol) \le \varepsilon & 
+        \argmin \sup_{\sol \in \cs} \dist(\cdot,\sol)} \\
+         \midrule
+         \dist(\out,\sol) \le \varepsilon \sol 
+         & \err(\out,\cs) \le \varepsilon
+        \end{array} 
+    \end{equation*}
+    
+    \label{tab:errorcrit}
+\end{table}
 
-
+\section{Relative Error}
