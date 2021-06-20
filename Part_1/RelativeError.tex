@@ -1,8 +1,8 @@
 \chapter{Various Error Criteria} \label{chap:relerror}
-The error criterion in \cref{prob:findzerocont} requires that the location of one zero of the function be identified within an interval of half-width $\varepsilon$.  The true solution of $f(x) = 0$ can be written as the set $f^{-1}(0)$.  If the zero-finding algorithm outputs $x_0$, then the true error of the output is $\dist\bigl(x_0,f^{-1}(0)\bigr)$, where the distance here is between a point and a set of points: $\dist(x,\cy) := \inf_{y \in \cy} \abs{x-y}$. The absolute error criterion in \cref{prob:findzerocont} that the output, $x_0$, must satisfy can be expressed as 
+The error criterion in \cref{prob:findzerocont} requires that the location of one zero of the function be identified within an interval of half-width $\varepsilon$.  The true solution of $f(x) = 0$ can be written as the set $f^{-1}(0)$.  If the zero-finding algorithm outputs $x_0$, then the true error of the output is $\min_{x \in f^{-1}(0)} \abs{x-x_0}$. The absolute error criterion in \cref{prob:findzerocont} that the output, $x_0$, must satisfy can be expressed as 
 \begin{equation} \label{eq:fzeroerrorcrit}
     \crit\bigl(x_0,f^{-1}(0),\varepsilon\bigr) = 
-    \begin{cases} \true, & \dist\bigl(x_0,f^{-1}(0)\bigr) \le \varepsilon,\\
+    \begin{cases} \true, & \exists x \in f^{-1}(0) \text{ such that } \abs{x-x_0} \le \varepsilon,\\
     \false, & \text{otherwise}.
     \end{cases}
 \end{equation}
@@ -11,11 +11,10 @@ In practice, it is not possible to know the true error of the output, but \cref{
 The data-driven stopping criterion for \cref{alg:zeroBisectionAB} may be expressed by replacing the true solution by the all possible partial solutions as
 \begin{equation}
     \datacrit\bigl(x_0,[x_{\text{left}},x_{\text{right}}],\varepsilon\bigr) = 
-    \begin{cases} \true, & \crit\bigl(x_0,x,\varepsilon\bigr) = \true \ \forall x \in [x_{\text{left}},x_{\text{right}}] ,\\
+    \begin{cases} \true, & \crit\bigl(x_0,\{x\},\varepsilon\bigr) = \true \ \ \forall x \in [x_{\text{left}},x_{\text{right}}] ,\\
     \false, & \text{otherwise},
     \end{cases}
 \end{equation}
-Since the second argument in $\crit$ as defined in \eqref{eq:fzeroerrorcrit} is a set, but the second argument in $\crit$ here is a point, we must extend the definition of $\crit$ and $\dist$ appropriately since only one zero is required.
 
 Choosing $x_0 = (x_{\text{left}}+x_{\text{right}})/2$ as is done in \cref{alg:zeroBisectionAB} gives the stopping criterion the best chance of being $\true$.  When $\datacrit\bigl(x_0,[x_{\text{left}},x_{\text{right}}],\varepsilon\bigr) = \true$, then \cref{alg:zeroBisectionAB} stops and returns $x_0$.
 
@@ -23,30 +22,57 @@ In some cases, the practitioner may wish to choose a different kind of error cri
 
 \section{A Generic Numerical Problem and Template Algorithm}
 
-Let's generalize the zero-finding situation to a generic numerical problem.  As before, we let $\cf$ denote the set of input functions, which must be large enough so that the successful algorithm is widely applicable but constrained so that a successful algorithm exists. The set of possible solutions is denoted $\cg$.  In \cref{prob:findzerocont} $\cf$ corresponds to all continuous functions on closed, bounded intervals where the function has opposite signs at the endpoints of the defining interval, and $\cg$ corresponds to all closed, bounded subsets of real numbers.
+Let's generalize the zero-finding situation to a generic numerical problem.  As before, we let $\cf$ denote the set of input functions, which must be large enough so that the successful algorithm is widely applicable but constrained so that a successful algorithm exists. 
 
 \begin{NumProblem}[Generic Numerical Problem]
 \label{prob:generalProblem}
 \problemspecs{set of functions $\cf$ \\ 
 solution operator $\sol: \cf \to \cg$}
 {black-box function $f \in \cf$ \\ error tolerance (vector) $\veps$}
-{$\out \in \cg$ such that \\ \qquad $\crit(\out,\sol(f),\veps) = \true$}
+{$\out \in \ca$ such that \\ \qquad $\crit(\out,\sol(f),\veps) = \true$}
 \end{NumProblem}
 
+The solution operator, $\sol$, maps an element in $\cf$ to a \emph{set} of acceptable solutions, not a single solution. This is to allow for the case of non-unique acceptable solutions. For example, if $f: x \mapsto x^3 - x$ defined on $[-2,2]$, then $\sol(f) = \{-1, 0, 1\}$ for zero-finding \cref{prob:findzerocont}, where only one zero is required, but  $\sol(f) = \{ \{-1, 0, 1\} \}$ for \cref{prob:findzerocontall}, where all zeros are required.  The set of sets of acceptable solutions is denoted $\cg$.
 
-Next we define a template \cref{alg:template}.  The algorithm works with with a set of possible (partial) true solutions, $\cs$, initialized to $\cs_0$, which corresponds to (a subset of) $\cg$.  The set $\cs$ also serves as a set of possible algorithm outputs.  For \cref{alg:zeroBisectionAB}, $\cg$ corresponds to all subsets of $\reals$, but since only one zero is required, $\cs$ is the interval $[x_{\text{left}},x_{\text{right}}]$, which is initialized to $[a,b]$. 
+The output required from the problem comes from the set of acceptable solutions $\ca$.  The elements of $\ca$ are the elements of the elements of $\cg$, i.e., $\ca = \{S \in G : G \in \cg\}$.  For $f: x \mapsto x^3 - x$ defined on $[-2,2]$ in zero-finding \cref{prob:findzerocont}, $\out$ is a number sufficiently close to $-1$ or $0$ or $1$.  For \cref{prob:findzerocontall}, $\out$ for this same function is a set sufficiently close to  $\{-1, 0, 1\}$.  The sets $\cf$, $\cg$, and $\ca$ are tabulated for different problems in \cref{tab:genericproblem}.
 
-At each iteration, the algorithm samples the input function further and shrinks the set $\cs$.  A data-based stopping criterion is defined as 
+The error criterion for the problem, $\crit: \ca \times \cg \times (0,\infty)^s \to \{\true, \false\}$, specifies how close the output must be to an element in $\sol(f)$.  In \eqref{eq:fzeroerrorcrit} this is an absolute error criterion.  However other error criteria are possible and common.
+
+
+\begin{table}[H]
+    \centering
+    \caption{Examples of specific problems following Generic \cref{prob:generalProblem}}
+    \begin{equation*}
+       \begin{array}{ccc>{\centering}m{0.25\textwidth}>{\centering}m{0.2\textwidth}}
+       \multicolumn{2}{c}{\text{Problem}} & \text{Inputs, }\cf & $\cg$ & $\ca$
+         \tabularnewline \toprule
+         \text{\ref{prob:findzerocont}} & 
+         \sol(f) = f^{-1}(0) & \bigcup_{a < b} C[a,b] & closed, bounded subsets of $\reals$ & $\reals$
+        \tabularnewline \midrule
+        \text{\ref{prob:findzerocontall}} &
+        \sol(f) = \{f^{-1}(0)\} & \bigcup_{a < b} C[a,b] & sets with a single element that is a closed, bounded subset of $\reals$  & 
+        closed, bounded subsets of $\reals$
+        \tabularnewline \bottomrule
+        \end{array} 
+    \end{equation*}
+    
+    \label{tab:genericproblem}
+\end{table}
+
+
+
+Next we define a template \cref{alg:template} for \cref{prob:generalProblem}.  The algorithm works with $\cs$, a set of acceptable solutions consistent with the function data.  We initialize $\cs$ to be $\ca$, the whole set of acceptable solutions, which is also are set of possible outputs.
+At each iteration, the algorithm samples $f$ further and shrinks $\cs$ to be consistent with all function data.  A data-based stopping criterion is defined by determining whether the error criterion for the problem is true for all possible acceptable solutions in $\cs$:
 \begin{equation}
-    \datacrit(\out,\cs,\varepsilon) = \begin{cases} \true, & \crit(\out,\sol,\varepsilon) = \true \quad \forall \sol \in \cs, \\ \false, & \text{otherwise} .
+    \datacrit(\out,\ca,\varepsilon) = \begin{cases} \true, & \crit(\out,S,\veps) = \true \quad \forall S \in \cs, \\ \false, & \text{otherwise} .
     \end{cases}
 \end{equation}
 When $\cs$ becomes small enough so that an output exists that $\out$ exists that makes the stopping criterion $\true$, then the algorithm terminates.
 
 \begin{algorithm}[H]
-\caption{Template algorithm for \cref{prob:generalProblem} \label{alg:template}}
+\caption{Template algorithm for Generic Numerical \cref{prob:generalProblem} \label{alg:template}}
 	\begin{algorithmic}
-   \State Initialize $\cs$, the set containing (enough of) $\sol$, to be $\cs_0$
+   \State Initialize $\cs$, the set containing acceptable solutions consistent with function data, to be $\ca$
    \State Shrink $\cs$ based on an initial sample of $f$
     \Repeat 
     \State Shrink $\cs$ further based on further sampling of $f$
