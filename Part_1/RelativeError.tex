@@ -36,35 +36,37 @@ The solution operator, $\sol$, maps an element in $\cf$ to a \emph{set} of accep
 
 The output required from the problem comes from the set of acceptable solutions $\ca$.  The elements of $\ca$ are the elements of the elements of $\cg$, i.e., $\ca = \{S \in G : G \in \cg\}$.  For $f: x \mapsto x^3 - x$ defined on $[-2,2]$ in zero-finding \cref{prob:findzerocont}, $\out$ is a number sufficiently close to $-1$ or $0$ or $1$.  For \cref{prob:findzerocontall}, $\out$ for this same function is a set sufficiently close to  $\{-1, 0, 1\}$.  The sets $\cf$, $\cg$, and $\ca$ are tabulated for different problems in \cref{tab:genericproblem}.
 
-The error criterion for the problem, $\crit: \ca \times \cg \times (0,\infty)^s \to \{\true, \false\}$, specifies how close the output must be to an element in $\sol(f)$.  In \eqref{eq:fzeroerrorcrit} this is an absolute error criterion.  However other error criteria are possible and common.
+The error criterion for the problem, $\crit: \ca \times \cg \times (0,\infty)^s \to \{\true, \false\}$, specifies how close the output must be to an element in $\sol(f)$.  Absolute error criteria take the form
+\begin{equation} \label{eq:generalerrorcrit}
+    \crit\bigl(\out,\sol(f),\varepsilon\bigr) = 
+    \begin{cases} \true, & \exists G \in \sol(f) \text{ such that } \vdist(\out,G) \le \veps,\\
+    \false, & \text{otherwise},
+    \end{cases}
+\end{equation}
+where $\vdist(\out,G)$ is an $s$-dimensional vector of distances, which must be no greater than $\veps$ element-wise for $\crit$ to be true. The error criterion defined in \eqref{eq:fzeroerrorcrit} this is of this form, but other error criteria are possible and common.
 
 
 \begin{table}[H]
     \centering
     \caption{Examples of specific problems following Generic \cref{prob:generalProblem}}
-    \begin{equation*}
-       \begin{array}{ccc>{\centering}m{0.25\textwidth}>{\centering}m{0.2\textwidth}}
-       \multicolumn{2}{c}{\text{Problem}} & \text{Inputs, }\cf & $\cg$ & $\ca$
+      {\small \begin{tabular}{c>{\centering}m{0.23\textwidth}>{\centering}m{0.13\textwidth}>{\centering}m{0.25\textwidth}>{\centering}m{0.2\textwidth}}
+       \multicolumn{2}{c}{Problem} & Inputs, $\cf$ & $\cg$ & $\ca$
          \tabularnewline \toprule
-         \text{\ref{prob:findzerocont}} & 
-         \sol(f) = f^{-1}(0) & \bigcup_{a < b} C[a,b] & closed, bounded subsets of $\reals$ & $\reals$
+         \ref{prob:findzerocont} & 
+         $\sol(f) = f^{-1}(0)$ & $\bigcup_{a < b} C[a,b]$ & closed, bounded subsets of $\reals$ & $\reals$
         \tabularnewline \midrule
-        \text{\ref{prob:findzerocontall}} &
-        \sol(f) = \{f^{-1}(0)\} & \bigcup_{a < b} C[a,b] & sets with a single element that is a closed, bounded subset of $\reals$  & 
+        \ref{prob:findzerocontall} &
+        $\sol(f) = \{f^{-1}(0)\}$ & $\bigcup_{a < b} C[a,b]$ & sets with a single element that is a closed, bounded subset of $\reals$  & 
         closed, bounded subsets of $\reals$
         \tabularnewline \bottomrule
-        \end{array} 
-    \end{equation*}
-    
+        \end{tabular} }
     \label{tab:genericproblem}
 \end{table}
-
-
 
 Next we define a template \cref{alg:template} for \cref{prob:generalProblem}.  The algorithm works with $\cs$, a set of acceptable solutions consistent with the function data.  We initialize $\cs$ to be $\ca$, the whole set of acceptable solutions, which is also are set of possible outputs.
 At each iteration, the algorithm samples $f$ further and shrinks $\cs$ to be consistent with all function data.  A data-based stopping criterion is defined by determining whether the error criterion for the problem is true for all possible acceptable solutions in $\cs$:
 \begin{equation}
-    \datacrit(\out,\ca,\varepsilon) = \begin{cases} \true, & \crit(\out,S,\veps) = \true \quad \forall S \in \cs, \\ \false, & \text{otherwise} .
+    \datacrit(\out,\cs,\veps) = \begin{cases} \true, & \crit(\out,S,\veps) = \true \quad \forall S \in \cs, \\ \false, & \text{otherwise} .
     \end{cases}
 \end{equation}
 When $\cs$ becomes small enough so that an output exists that $\out$ exists that makes the stopping criterion $\true$, then the algorithm terminates.
@@ -82,14 +84,9 @@ When $\cs$ becomes small enough so that an output exists that $\out$ exists that
     \end{algorithmic}
 \end{algorithm}
 
-The absolute error criterion defined in \eqref{eq:fzeroerrorcrit} is an example of an absolute error criterion, which takes the form in the first row of \cref{tab:errorcrit}.  It is defined in terms of a distance between possible outputs and possible solutions, $\crit: \cs_0 \to \cg$.
-\begin{equation} \label{eq:fzeroerrorcrit}
-    \crit\bigl(\out,\sol(0),\varepsilon\bigr) = 
-    \begin{cases} \true, & \dist\bigl(\{x_0\},f^{-1}(0)\bigr) \le \varepsilon,\\
-    \false, & \text{otherwise}.
-    \end{cases}
-\end{equation}
 
+
+\section{Absolute Error Criterion} \label{sec:abserror}
 
 
 of the general case defined in the first row of \cref{tab:errorcrit}.
@@ -98,9 +95,9 @@ of the general case defined in the first row of \cref{tab:errorcrit}.
     \caption{Conditions under which the error criterion is true and the corresponding optimal output}
     \begin{equation*}
        \begin{array}{cc}
-         \crit(\out,\sol,\varepsilon)
+         \crit(\out,\sol(f),\veps)
          & \out\\ \toprule
-         \dist(\out,\sol) \le \varepsilon & 
+        \vdist(\out,G) \le \veps & 
         \argmin \sup_{\sol \in \cs} \dist(\cdot,\sol)} \\
          \midrule
          \dist(\out,\sol) \le \varepsilon \sol 
@@ -112,3 +109,5 @@ of the general case defined in the first row of \cref{tab:errorcrit}.
 \end{table}
 
 \section{Relative Error}
+
+Testing
