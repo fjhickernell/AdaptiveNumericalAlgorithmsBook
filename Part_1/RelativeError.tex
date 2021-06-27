@@ -34,34 +34,26 @@ solution operator $\sol: \cf \to \cg$}
 
 The solution operator, $\sol$, maps an element in $\cf$ to a \emph{set} of acceptable solutions, not a single solution. This is to allow for the case of non-unique acceptable solutions. For example, if $f: x \mapsto x^3 - x$ defined on $[-2,2]$, then $\sol(f) = \{-1, 0, 1\}$ for zero-finding \cref{prob:findzerocont}, where only one zero is required, but  $\sol(f) = \{ \{-1, 0, 1\} \}$ for \cref{prob:findzerocontall}, where all zeros are required.  The set of sets of acceptable solutions is denoted $\cg$.
 
-The output required from the problem comes from the set of acceptable solutions $\ca$.  The elements of $\ca$ are the elements of the elements of $\cg$, i.e., $\ca = \{S \in G : G \in \cg\}$.  For $f: x \mapsto x^3 - x$ defined on $[-2,2]$ in zero-finding \cref{prob:findzerocont}, $\out$ is a number sufficiently close to $-1$ or $0$ or $1$.  For \cref{prob:findzerocontall}, $\out$ for this same function is a set sufficiently close to  $\{-1, 0, 1\}$.  The sets $\cf$, $\cg$, and $\ca$ are tabulated for different problems in \cref{tab:genericproblem}.
-
-The error criterion for the problem, $\crit: \ca \times \cg \times (0,\infty)^s \to \{\true, \false\}$, specifies how close the output must be to an element in $\sol(f)$.  Absolute error criteria take the form
-\begin{equation} \label{eq:generalerrorcrit}
-    \crit\bigl(\out,\sol(f),\varepsilon\bigr) = 
-    \begin{cases} \true, & \exists G \in \sol(f) \text{ such that } \vdist(\out,G) \le \veps,\\
-    \false, & \text{otherwise},
-    \end{cases}
-\end{equation}
-where $\vdist(\out,G)$ is an $s$-dimensional vector of distances, which must be no greater than $\veps$ element-wise for $\crit$ to be true. The error criterion defined in \eqref{eq:fzeroerrorcrit} this is of this form, but other error criteria are possible and common.
-
+The output required from the problem comes from the set of acceptable solutions $\ca$.  The elements of $\ca$ are the elements of the elements of $\cg$, i.e., $\ca = \{S \in G : G \in \cg\}$.  For $f: x \mapsto x^3 - x$ defined on $[-2,2]$ in zero-finding \cref{prob:findzerocont}, $\out$ is a number sufficiently close to $-1$ or $0$ or $1$.  For \cref{prob:findzerocontall}, $\out$ for this same function is a set sufficiently close to  $\{-1, 0, 1\}$.  The sets $\cf$, $\cg$, and $\ca$ are tabulated for different problems in \cref{tab:genericproblem}.  
 
 \begin{table}[H]
     \centering
     \caption{Examples of specific problems following Generic \cref{prob:generalProblem}}
-      {\small \begin{tabular}{c>{\centering}m{0.23\textwidth}>{\centering}m{0.13\textwidth}>{\centering}m{0.25\textwidth}>{\centering}m{0.2\textwidth}}
+      {\small \begin{tabular}{c>{\centering}m{0.21\textwidth}>{\centering}m{0.15\textwidth}>{\centering}m{0.25\textwidth}>{\centering}m{0.2\textwidth}}
        \multicolumn{2}{c}{Problem} & Inputs, $\cf$ & $\cg$ & $\ca$
          \tabularnewline \toprule
          \ref{prob:findzerocont} & 
-         $\sol(f) = f^{-1}(0)$ & $\bigcup_{a < b} C[a,b]$ & closed, bounded subsets of $\reals$ & $\reals$
+         $\sol(f) = f^{-1}(0)$ & $\bigcup_{a < b} C[a,b]$ \\ $f(a)f(b) \le 0$ & closed, bounded subsets of $\reals$ & $\reals$
         \tabularnewline \midrule
         \ref{prob:findzerocontall} &
-        $\sol(f) = \{f^{-1}(0)\}$ & $\bigcup_{a < b} C[a,b]$ & sets with a single element that is a closed, bounded subset of $\reals$  & 
+        $\sol(f) = \{f^{-1}(0)\}$ & $\bigcup_{a < b} C[a,b]$ & sets with a single element: a closed, bounded subset of $\reals$  & 
         closed, bounded subsets of $\reals$
         \tabularnewline \bottomrule
         \end{tabular} }
     \label{tab:genericproblem}
 \end{table}
+
+The error criterion, $\crit: \ca \times \cg \times (0,\infty)^s \to \{\true, \false\}$, specifies how close the output must be to an element in $\sol(f)$.  The first input is an algorithm output, the second input is the true solution, and the third input is a (vector) error tolerance.  The error criterion for the zero-finding problem defined in \eqref{eq:fzeroerrorcrit} is an example.  Various error criteria are discussed in this chapter.
 
 Next we define a template \cref{alg:template} for \cref{prob:generalProblem}.  The algorithm works with $\cs$, a set of acceptable solutions consistent with the function data.  We initialize $\cs$ to be $\ca$, the whole set of acceptable solutions, which is also are set of possible outputs.
 At each iteration, the algorithm samples $f$ further and shrinks $\cs$ to be consistent with all function data.  A data-based stopping criterion is defined by determining whether the error criterion for the problem is true for all possible acceptable solutions in $\cs$:
@@ -87,21 +79,33 @@ When $\cs$ becomes small enough so that an output exists that $\out$ exists that
 
 
 \section{Absolute Error Criterion} \label{sec:abserror}
+The error criterion for the zero-finding problem defined in \eqref{eq:fzeroerrorcrit}  is an absolute error criterion, which requires that the output be within $\varepsilon$ of the true answer. The following is a more general absolute error criterion where acceptable solutions are real numbers: 
+\begin{equation} \label{eq:absnormerrorcrit}
+    \crit(\out,\sol(f),\varepsilon) = 
+    \begin{cases} \true, & \exists G \in \sol(f) \text{ with } \abs{\out-G} \le \varepsilon,\\
+    \false, & \text{otherwise}.
+    \end{cases}
+\end{equation}
+If $\cs$, the set of acceptable solutions consistent with the function data in \cref{alg:template}, is the interval $\cs = [S_{\lo}, S_{\high}]$, then the optimal choice of $\out$ is the center of the interval.
+
+\cref{tab:errorcrit} shows the optimal choices of the output, $\out$ for various error criteria that can be expressed in terms of the absolute value between the output and the solution and where an acceptable true solution is known to be in $[S_{\lo}, S_{\high}]$.  In the following sections we explore relative and compound error criteria.  In these cases, the interval midpoint may not be the optimal choice for $\out$.
 
 
-of the general case defined in the first row of \cref{tab:errorcrit}.
 \begin{table}[H]
     \centering
-    \caption{Conditions under which the error criterion is true and the corresponding optimal output}
+    \caption{Conditions under which the error criterion is true and the corresponding optimal output when an acceptable true solution lies in $\cs = [S_{\lo}, S_{\high}]$.}
     \begin{equation*}
-       \begin{array}{cc}
-         \crit(\out,\sol(f),\veps)
-         & \out\\ \toprule
-        \vdist(\out,G) \le \veps & 
-        \argmin \sup_{\sol \in \cs} \dist(\cdot,\sol)} \\
+       \begin{array}{ccc}
+         \crit(\out,\sol(f),\varepsilon) && \text{Sufficient condition for}\\
+         \exists G \in \sol(f) \text{ such that}
+         & \out 
+         & \datacrit(\out,\cs,\varepsilon) = \true \tabularnewline \toprule
+        \abs{\out-G} \le \varepsilon & 
+        (S_{\lo} + S_{\high})/2 &
+        S_{\high} - S_{\lo} < 2\varepsilon \\
          \midrule
-         \dist(\out,\sol) \le \varepsilon \sol 
-         & \err(\out,\cs) \le \varepsilon
+         \abs{\out-G} \le \varepsilon \abs{G} 
+         & 
         \end{array} 
     \end{equation*}
     
@@ -109,7 +113,14 @@ of the general case defined in the first row of \cref{tab:errorcrit}.
 \end{table}
 
 \section{Relative Error}
-
+Sometimes the error requirement is relative to the size of the answer, e.g., 
+\begin{equation} \label{eq:absnormerrorcrit}
+    \crit(\out,\sol(f),\varepsilon) = 
+    \begin{cases} \true, & \exists G \in \sol(f) \text{ with } \abs{\out-G} \le \varepsilon \abs{G},\\
+    \false, & \text{otherwise}.
+    \end{cases}
+\end{equation}
+Here we assume that the relative error tolerance, $\varepsilon$. is strictly less than one.
 Testing
 
 Testing
